@@ -15,7 +15,7 @@ export class PackProductsDto {
   pedidos: OrderDto[];
 }
 
-class OrderDto {
+export class OrderDto {
   @IsPositive({ message: 'O ID do pedido deve ser um número positivo' })
   pedido_id: number;
 
@@ -24,7 +24,7 @@ class OrderDto {
   produtos: ProductDto[];
 }
 
-class DimensionsDto {
+export class DimensionsDto {
   @IsPositive({ message: 'A altura deve ser um número positivo' })
   altura: number;
 
@@ -35,7 +35,7 @@ class DimensionsDto {
   comprimento: number;
 }
 
-class ProductDto {
+export class ProductDto {
   @IsString({ message: 'O ID do produto deve ser uma string' })
   produto_id: string;
 
