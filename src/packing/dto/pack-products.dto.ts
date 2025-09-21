@@ -1,9 +1,17 @@
 import { Type } from 'class-transformer';
-import { IsPositive, IsString, ValidateNested } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsDefined,
+  IsPositive,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
 export class PackProductsDto {
+  @IsDefined({ message: 'O pedido deve conter a lista de pedidos' })
   @Type(() => OrderDto)
   @ValidateNested({ each: true })
+  @ArrayMinSize(1, { message: 'Deve haver pelo menos 1 pedido' })
   pedidos: OrderDto[];
 }
 
