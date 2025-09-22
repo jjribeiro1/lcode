@@ -28,6 +28,7 @@ docker-compose up -d
 Isso irá executar as duas aplicações:
 
 - **Exercício 1**: Disponível na porta `3000` (http://localhost:3000)
+  - Documentação Swagger: http://localhost:3000/api/docs
 - **Exercício 2**: Disponível na porta `4000` (http://localhost:4000)
 
 ## Exercício 1 - Sistema de Empacotamento
