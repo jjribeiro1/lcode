@@ -1,73 +1,118 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# LCode
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este projeto contém exercícios desenvolvidos com NestJS.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Como rodar o projeto
 
-## Description
+### Pré-requisitos
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Git
+- Docker
+- Docker Compose
 
-## Installation
+### Instruções
+
+**Passo 1:** Clone o projeto
 
 ```bash
-$ pnpm install
+git clone <url-do-repositorio>
+cd lcode
 ```
 
-## Running the app
+**Passo 2:** Execute o projeto with Docker Compose
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+docker-compose up -d
 ```
 
-## Test
+Isso irá executar as duas aplicações:
 
-```bash
-# unit tests
-$ pnpm run test
+- **Exercício 1**: Disponível na porta `3000` (http://localhost:3000)
+- **Exercício 2**: Disponível na porta `4000` (http://localhost:4000)
 
-# e2e tests
-$ pnpm run test:e2e
+## Exercício 1 - Sistema de Empacotamento
 
-# test coverage
-$ pnpm run test:cov
+### Estratégia de Resolução
+
+A solução utilizada combina características dos algoritmos FFD (First Fit Decreasing) e BFD (Best Fit Decreasing). Os produtos são ordenados por volume (FFD), a menor caixa possível é selecionada para o primeiro produto (BFD) e, em seguida, a caixa é preenchida com outros produtos que caibam respeitando um fator de eficiência de 70%. O processo segue as seguintes etapas:
+
+1. **Ordenação por Volume**: Os produtos são organizados do maior para o menor volume
+
+2. **Seleção da Melhor Caixa**: Para cada produto, o algoritmo busca a **menor caixa** que consegue acomodá-lo geometricamente. Isso evita usar caixas grandes desnecessariamente para produtos pequenos.
+
+3. **Verificação Geométrica**: O produto precisa caber fisicamente na caixa. Para isso, as dimensões são ordenadas (menor para maior) tanto do produto quanto da caixa, garantindo que o produto pode ser rotacionado para se encaixar.
+
+4. **Preenchimento da caixa**: Após achar uma caixa para o primeiro produto, o algoritmo tenta preencher o espaço restante com outros produtos menores, respeitando um fator de eficiência de 70%.
+
+5. **Tratamento de Casos Especiais**: Produtos que não cabem em nenhuma caixa disponível são sinalizados com uma observação específica, mantendo a transparência do processo.
+
+### Exemplo de Uso da API
+
+**Caixas Disponíveis:**
+- **Caixa 1**: 30cm × 40cm × 80cm (volume: 96.000 cm³)
+- **Caixa 2**: 50cm × 50cm × 40cm (volume: 100.000 cm³)
+- **Caixa 3**: 50cm × 80cm × 60cm (volume: 240.000 cm³)
+
+**Endpoint:** `POST /packing`
+
+**Entrada:**
+```json
+{
+  "pedidos": [
+    {
+      "pedido_id": 1,
+      "produtos": [
+        {
+          "produto_id": "PROD001",
+          "dimensoes": {
+            "altura": 10,
+            "largura": 20,
+            "comprimento": 30
+          }
+        },
+        {
+          "produto_id": "PROD002",
+          "dimensoes": {
+            "altura": 5,
+            "largura": 10,
+            "comprimento": 15
+          }
+        }
+      ]
+    }
+  ]
+}
 ```
 
-## Support
+**Saída:**
+```json
+{
+  "pedidos": [
+    {
+      "pedido_id": 1,
+      "caixas": [
+        {
+          "caixa_id": "Caixa 1",
+          "produtos": ["PROD001", "PROD002"]
+        }
+      ]
+    }
+  ]
+}
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Por que essa Abordagem?
 
-## Stay in touch
+- **Simplicidade**: Fácil de entender e manter
+- **Eficiência prática**: Utilização de princípios dos algoritmos FFD e BFD para reduzir o número de caixas sem complexidade excessiva
+- **Realismo**: Considera rotações de produtos e fator de eficiência para simular um empacotamento real
+- **Flexibilidade**: Permite ajustes no fator de eficiência conforme necessário
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Testes
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+A lógica principal de empacotamento é coberta por **testes unitários** que validam:
+- Empacotamento de produto único na menor caixa compatível
+- Combinação de múltiplos produtos na mesma caixa quando possível
+- Uso de múltiplas caixas quando produtos não cabem juntos
+- Tratamento de produtos que não cabem em nenhuma caixa disponível
+- Processamento correto de múltiplos pedidos independentes
