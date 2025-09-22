@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  exercicio-1:
+    build:
+      context: .
+      dockerfile: apps/exercicio-1/Dockerfile
+    container_name: lcode-exercicio-1
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+    networks:
+      - lcode-network
+    restart: unless-stopped
+    
+  exercicio-2:
+    build:
+      context: .
+      dockerfile: apps/exercicio-2/Dockerfile
+    container_name: lcode-exercicio-2
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - NODE_ENV=production
+    networks:
+      - lcode-network
+    restart: unless-stopped
+
+networks:
+  lcode-network:
+    driver: bridge
