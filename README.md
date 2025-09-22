@@ -15,11 +15,11 @@ Este projeto contém exercícios desenvolvidos com NestJS.
 **Passo 1:** Clone o projeto
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/jjribeiro1/lcode.git
 cd lcode
 ```
 
-**Passo 2:** Execute o projeto with Docker Compose
+**Passo 2:** Execute o projeto com Docker Compose
 
 ```bash
 docker-compose up -d
@@ -53,7 +53,7 @@ A solução utilizada combina características dos algoritmos FFD (First Fit Dec
 - **Caixa 2**: 50cm × 50cm × 40cm (volume: 100.000 cm³)
 - **Caixa 3**: 50cm × 80cm × 60cm (volume: 240.000 cm³)
 
-**Endpoint:** `POST /packing`
+**Endpoint:** `POST /api/packing`
 
 **Entrada:**
 ```json
