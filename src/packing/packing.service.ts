@@ -38,6 +38,8 @@ export class PackingService {
     },
   ];
 
+  private readonly PACKING_EFFICIENCY = 0.7;
+
   packProducts(dto: PackProductsDto) {
     const packedOrders: PackedOrderDto[] = [];
 
@@ -57,13 +59,10 @@ export class PackingService {
     let productsToPack = this.sortedProductsByVolume(order.produtos);
 
     while (productsToPack.length > 0) {
-      const remainingProductsToPack: ProductWithVolume[] = [];
       const firstProduct = productsToPack[0];
-      const box = this.boxes.find((b) =>
-        this.checkGeometricFit(firstProduct, b),
-      );
+      const bestBox = this.findBestBox(firstProduct);
 
-      if (!box) {
+      if (!bestBox) {
         packedBoxes.push({
           caixa_id: null,
           produtos: [firstProduct.produto_id],
@@ -74,30 +73,55 @@ export class PackingService {
         continue;
       }
 
-      const productsInThisBox: ProductWithVolume[] = [firstProduct];
-      let remainingVolume = box.volume - firstProduct.volume;
-
-      for (let i = 1; i < productsToPack.length; i++) {
-        const product = productsToPack[i];
-        if (
-          product.volume <= remainingVolume &&
-          this.checkGeometricFit(product, box)
-        ) {
-          productsInThisBox.push(product);
-          remainingVolume -= product.volume;
-        } else {
-          remainingProductsToPack.push(product);
-        }
-      }
+      const { productsInBox, remainingProducts } = this.packProductsInBox(
+        productsToPack,
+        bestBox,
+      );
 
       packedBoxes.push({
-        caixa_id: box.box_id,
-        produtos: productsInThisBox.map((p) => p.produto_id),
+        caixa_id: bestBox.box_id,
+        produtos: productsInBox.map((p) => p.produto_id),
       });
-      productsToPack = remainingProductsToPack;
+      productsToPack = remainingProducts;
     }
 
     return packedBoxes;
+  }
+
+  private packProductsInBox(products: ProductWithVolume[], box: Box) {
+    const productsInBox: ProductWithVolume[] = [products[0]];
+    const remainingProducts: ProductWithVolume[] = [];
+    let usedVolume = products[0].volume;
+
+    for (let i = 1; i < products.length; i++) {
+      const product = products[i];
+
+      if (
+        this.checkGeometricFit(product, box) &&
+        usedVolume + product.volume <= box.volume * this.PACKING_EFFICIENCY
+      ) {
+        productsInBox.push(product);
+        usedVolume += product.volume;
+      } else {
+        remainingProducts.push(product);
+      }
+    }
+
+    return { productsInBox, remainingProducts };
+  }
+
+  private findBestBox(product: ProductDto): Box | null {
+    const fittingBoxes = this.boxes.filter((box) =>
+      this.checkGeometricFit(product, box),
+    );
+
+    if (fittingBoxes.length === 0) {
+      return null;
+    }
+
+    return fittingBoxes.reduce((bestBox, currentBox) =>
+      currentBox.volume < bestBox.volume ? currentBox : bestBox,
+    );
   }
 
   private checkGeometricFit(product: ProductDto, box: Box): boolean {
