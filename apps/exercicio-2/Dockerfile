@@ -17,6 +17,7 @@ RUN pnpm run build exercicio-2
 FROM node:22-alpine AS production
 
 RUN npm install -g pnpm
+RUN apk add --no-cache postgresql-client
 
 WORKDIR /app
 
